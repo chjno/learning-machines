@@ -1,17 +1,22 @@
 import numpy as np
 
+
 def sigmoid_fn(x):
-  return 1.0 / ( 1.0 + np.exp( -x ) )
+    return 1.0 / (1.0 + np.exp(-x))
+
 
 def sigmoid_dfn(x):
-  y = sigmoid_fn( x )
-  return y * ( 1.0 - y )
+    y = sigmoid_fn(x)
+    return y * (1.0 - y)
+
 
 def tanh_fn(x):
-  return np.sinh( x ) / np.cosh( x )
+    return np.sinh(x) / np.cosh(x)
+
 
 def tanh_dfn(x):
-  return 1.0 - np.power( tanh_fn( x ), 2.0 )
+    return 1.0 - np.power(tanh_fn(x), 2.0)
+
 
 class Mlp:
 
@@ -35,16 +40,15 @@ class Mlp:
     def __init__(self, layer_sizes):
 
         self.layer_sizes = layer_sizes
-        
-        self.error = np.zeros(( layer_sizes[0], 1 ))
+
+        self.error = np.zeros((layer_sizes[0], 1))
 
         for i in range(0, len(self.layer_sizes) - 1):
             self.weights.append(np.random.rand(self.layer_sizes[i + 1], self.layer_sizes[i]))
             self.biases.append(np.random.rand(self.layer_sizes[i + 1], 1))
 
-
     def train(self, input_examples, output_examples):
-        
+
         index = 0
 
         while self.epoch <= self.n_epochs:
@@ -56,7 +60,7 @@ class Mlp:
             if index >= len(input_examples):
                 index = 0
 
-            outputs.append(input_examples[index]) # inputs
+            outputs.append(input_examples[index])   # inputs
             output_vec = output_examples[index]
 
             for i in range(0, len(self.layer_sizes) - 1):
@@ -70,27 +74,26 @@ class Mlp:
 
             for i in range(0, len(self.weights)):
                 # print self.weights[i]
+                print np.expand_dims(outputs[i].T, 1).shape
                 self.weights[i] -= self.learning_rate * np.dot(deltas[i], outputs[i].T)
                 self.biases[i] -= self.learning_rate * deltas[i]
                 # print self.weights[i]
 
-            self.error += np.absolute( output_vec - outputs[-1] )
+            self.error += np.absolute(output_vec - outputs[-1])
 
             if self.epoch % self.report_freq == 0:
-                print( "Epoch: %d\nError: %f" % ( self.epoch, np.sum( self.error ) / float( self.layer_sizes[0] ) / float( self.report_freq ) ) )
-                self.error = np.zeros( ( self.layer_sizes[0], 1 ) )
+                print("Epoch: %d\nError: %f" % (self.epoch, np.sum(self.error) / float(self.layer_sizes[0]) / float(self.report_freq)))
+                self.error = np.zeros((self.layer_sizes[0], 1))
 
             self.epoch += 1
             index += 1
 
-
     def predict(self, input_example):
-        
+
         activations = [None]
         outputs = []
-        deltas = []
 
-        outputs.append(input_example) # inputs
+        outputs.append(input_example)   # inputs
         # output_vec = output_examples[index]
 
         for i in range(0, len(self.layer_sizes) - 1):
