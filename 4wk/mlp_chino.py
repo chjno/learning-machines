@@ -60,24 +60,30 @@ class Mlp:
             if index >= len(input_examples):
                 index = 0
 
-            outputs.append(input_examples[index])   # inputs
+            outputs.append(np.expand_dims(input_examples[index], 1))   # inputs
             output_vec = output_examples[index]
+
+            # print 'outputs[0].shape == ' + str(outputs[0].shape)
 
             for i in range(0, len(self.layer_sizes) - 1):
                 activations.append(np.dot(self.weights[i], outputs[i]) + self.biases[i])
                 outputs.append(self.activation_fn(activations[i + 1]))
 
+                # print 'activations[' + str(i + 1) + '].shape == ' + str(activations[i + 1].shape)
+                # print 'outputs[' + str(i + 1) + '].shape == ' + str(outputs[i + 1].shape)
+
             deltas.insert(0, self.activation_dfn(activations[-1]) * (outputs[-1] - output_vec))
+
+            # print 'deltas[1].shape == ' + str(deltas[0].shape)
 
             for i in range(len(self.layer_sizes) - 2, 0, -1):
                 deltas.insert(0, self.activation_dfn(activations[i]) * np.dot(self.weights[i].T, deltas[0]))
 
+                # print 'deltas[0].shape == ' + str(deltas[0].shape)
+
             for i in range(0, len(self.weights)):
-                # print self.weights[i]
-                print np.expand_dims(outputs[i].T, 1).shape
                 self.weights[i] -= self.learning_rate * np.dot(deltas[i], outputs[i].T)
                 self.biases[i] -= self.learning_rate * deltas[i]
-                # print self.weights[i]
 
             self.error += np.absolute(output_vec - outputs[-1])
 
