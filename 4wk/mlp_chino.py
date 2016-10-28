@@ -21,10 +21,12 @@ def tanh_dfn(x):
 class Mlp:
 
     def activation_fn(self, x):
-        return tanh_fn(x)
+        # return tanh_fn(x)
+        return sigmoid_fn(x)
 
     def activation_dfn(self, x):
-        return tanh_dfn(x)
+        # return tanh_dfn(x)
+        return sigmoid_dfn(x)
 
     epoch = 0
     report_freq = 1000
@@ -63,23 +65,29 @@ class Mlp:
             outputs.append(np.expand_dims(input_examples[index], 1))   # inputs
             output_vec = output_examples[index]
 
-            # print 'outputs[0].shape == ' + str(outputs[0].shape)
+            print 'outputs[0].shape == ' + str(outputs[0].shape)
 
             for i in range(0, len(self.layer_sizes) - 1):
+
+                print 'weights[' + str(i) + '] == ' + str(self.weights[i].shape)
+                print 'np.dot(weights[' + str(i) + '], outputs[' + str(i) + ']) == ' + str(np.dot(self.weights[i], outputs[i]).shape)
+                print 'biases[' + str(i) + '] == ' + str(self.biases[0].shape)
+                print 'dot + biases[' + str(i) + '] == ' + str((np.dot(self.weights[i], outputs[i]) + self.biases[i]).shape)
+
                 activations.append(np.dot(self.weights[i], outputs[i]) + self.biases[i])
                 outputs.append(self.activation_fn(activations[i + 1]))
 
-                # print 'activations[' + str(i + 1) + '].shape == ' + str(activations[i + 1].shape)
-                # print 'outputs[' + str(i + 1) + '].shape == ' + str(outputs[i + 1].shape)
+                print 'activations[' + str(i + 1) + '].shape == ' + str(activations[i + 1].shape)
+                print 'outputs[' + str(i + 1) + '].shape == ' + str(outputs[i + 1].shape)
 
             deltas.insert(0, self.activation_dfn(activations[-1]) * (outputs[-1] - output_vec))
 
-            # print 'deltas[1].shape == ' + str(deltas[0].shape)
+            print 'deltas[1].shape == ' + str(deltas[0].shape)
 
             for i in range(len(self.layer_sizes) - 2, 0, -1):
                 deltas.insert(0, self.activation_dfn(activations[i]) * np.dot(self.weights[i].T, deltas[0]))
 
-                # print 'deltas[0].shape == ' + str(deltas[0].shape)
+                print 'deltas[0].shape == ' + str(deltas[0].shape)
 
             for i in range(0, len(self.weights)):
                 self.weights[i] -= self.learning_rate * np.dot(deltas[i], outputs[i].T)
