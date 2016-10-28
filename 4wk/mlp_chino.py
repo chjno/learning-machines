@@ -87,6 +87,8 @@ class Mlp:
 
             self.error += np.absolute(output_vec - outputs[-1])
 
+            print str(output_vec) + ' ' + str(outputs[-1])
+
             if self.epoch % self.report_freq == 0:
                 print("Epoch: %d\nError: %f" % (self.epoch, np.sum(self.error) / float(self.layer_sizes[0]) / float(self.report_freq)))
                 self.error = np.zeros((self.layer_sizes[0], 1))
