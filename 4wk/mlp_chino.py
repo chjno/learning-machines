@@ -63,7 +63,7 @@ class Mlp:
                 index = 0
 
             outputs.append(np.expand_dims(input_examples[index], 1))   # inputs
-            output_vec = output_examples[index]
+            output_vec = np.expand_dims(output_examples[index], 1)
 
             print 'outputs[0].shape == ' + str(outputs[0].shape)
 
@@ -92,6 +92,10 @@ class Mlp:
             for i in range(0, len(self.weights)):
                 self.weights[i] -= self.learning_rate * np.dot(deltas[i], outputs[i].T)
                 self.biases[i] -= self.learning_rate * deltas[i]
+
+            print 'output_vec.shape == ' + str(output_vec.shape)
+            print 'outputs[-1].shape == ' + str(outputs[-1].shape)
+            print 'outputs[-1] == ' + str(outputs[-1])
 
             self.error += np.absolute(output_vec - outputs[-1])
 

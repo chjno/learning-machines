@@ -1,6 +1,9 @@
+tr, va, te = mnist.load()
+
+import mlp_chino
 reload(mlp_chino)
-mlp = mlp_chino.Mlp([784,1000,1])
-mlp.train(train[0], train[1])
+mlp = mlp_chino.Mlp([784,1000,10])
+mlp.train(tr[0], tr[1])
 
 
 
